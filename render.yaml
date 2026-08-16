@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: bookverse-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: static
+    name: bookverse-landing
+    rootDir: frontend/landing
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_SELLER_PORTAL_URL
+        sync: false
+      - key: VITE_BUYER_PORTAL_URL
+        sync: false
+
+  - type: static
+    name: bookverse-seller
+    rootDir: frontend/seller-portal
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_LANDING_URL
+        sync: false
+
+  - type: static
+    name: bookverse-buyer
+    rootDir: frontend/buyer-portal
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_LANDING_URL
+        sync: false

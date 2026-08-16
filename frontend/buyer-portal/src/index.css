@@ -1,0 +1,15 @@
+@import "../../shared/styles/theme.css";
+
+/* Buyer portal uses purple accent */
+.theme-buyer,
+.buyer-app {
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-primary-soft: #ede9fe;
+  --color-primary-muted: #f5f3ff;
+  --shadow-glow-teal: 0 8px 32px rgba(124, 58, 237, 0.25);
+}
+
+.buyer-app .book-card-cover {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ffedd5 100%);
+}
