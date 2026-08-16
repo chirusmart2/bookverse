@@ -1,0 +1,71 @@
+name: Build BookVerse Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'frontend/buyer-portal/**'
+      - 'mobile/**'
+      - '.github/workflows/build-apk.yml'
+
+env:
+  VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/buyer-portal/package-lock.json
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build buyer portal
+        working-directory: frontend/buyer-portal
+        run: npm ci && npm run build
+
+      - name: Install Capacitor dependencies
+        working-directory: mobile
+        run: npm install
+
+      - name: Generate Android project
+        working-directory: mobile
+        run: npx cap add android && npx cap sync android
+
+      - name: Build debug APK
+        working-directory: mobile/android
+        run: ./gradlew assembleDebug
+
+      - name: Copy APK into repository artifact directory
+        run: mkdir -p release && cp mobile/android/app/build/outputs/apk/debug/app-debug.apk release/BookVerse-debug.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BookVerse-Android
+          path: release/BookVerse-debug.apk
+
+      - name: Commit APK to repository
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add release/BookVerse-debug.apk
+          git diff --cached --quiet || git commit -m "Build BookVerse Android APK"
+          git push
