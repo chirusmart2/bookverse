@@ -1,7 +1,10 @@
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "./auth";
 import type { ApiError, LoginResponse, User } from "./types";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000/api/v1";
+const configuredApiBase = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000/api/v1").replace(/\/+$/, "");
+const API_BASE = configuredApiBase.endsWith("/api/v1")
+  ? configuredApiBase
+  : `${configuredApiBase}/api/v1`;
 
 let refreshPromise: Promise<string | null> | null = null;
 
