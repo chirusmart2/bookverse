@@ -16,7 +16,7 @@ services:
       - key: CORS_ORIGINS
         sync: false
 
-  - type: static
+  - type: static_site
     name: bookverse-landing
     rootDir: frontend/landing
     buildCommand: npm install && npm run build
@@ -27,7 +27,7 @@ services:
       - key: VITE_BUYER_PORTAL_URL
         sync: false
 
-  - type: static
+  - type: static_site
     name: bookverse-seller
     rootDir: frontend/seller-portal
     buildCommand: npm install && npm run build
@@ -38,7 +38,7 @@ services:
       - key: VITE_LANDING_URL
         sync: false
 
-  - type: static
+  - type: static_site
     name: bookverse-buyer
     rootDir: frontend/buyer-portal
     buildCommand: npm install && npm run build
