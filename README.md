@@ -2,9 +2,17 @@
 
 A full-stack book marketplace with a **landing page**, separate **seller** and **buyer** portals, JWT auth, catalog management, cart/checkout (Cash on Delivery), post-delivery ratings, and an **Android app** built with Capacitor. Containerized with Docker and deployed on **Render**.
 
-**[🔗 Live Demo — BookVerse on Render](https://bookverse.onrender.com)** *(update this URL to your actual deployment)*
+**[🔗 Live Demo — Landing Page](https://bookverse-landing.onrender.com)**
 
-> **Note:** If Render's free tier puts the API to sleep, the first load may take ~30 seconds. Screenshots below show the current look of each portal.
+The live deployment also includes the separate portals:
+
+| Portal | URL |
+|--------|-----|
+| Landing | https://bookverse-landing.onrender.com |
+| Seller portal | https://bookverse-seller.onrender.com |
+| Buyer portal | https://bookverse-buyer.onrender.com |
+
+> **Note:** The API runs on Render's free tier, so the first request may take ~30 seconds to wake it up. Screenshots below show the current look of each portal.
 
 ## Screenshots
 
