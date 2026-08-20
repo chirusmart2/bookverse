@@ -1,14 +1,26 @@
 # BookVerse — Book Store Marketplace
 
-A full-stack book marketplace with a **landing page**, separate **seller** and **buyer** portals, JWT auth, catalog management, cart/checkout (Cash on Delivery), and post-delivery ratings.
+A full-stack book marketplace with a **landing page**, separate **seller** and **buyer** portals, JWT auth, catalog management, cart/checkout (Cash on Delivery), post-delivery ratings, and an **Android app** built with Capacitor. Containerized with Docker and deployed on **Render**.
+
+**[🔗 Live Demo — BookVerse on Render](https://bookverse.onrender.com)** *(update this URL to your actual deployment)*
+
+> **Note:** If Render's free tier puts the API to sleep, the first load may take ~30 seconds. Screenshots below show the current look of each portal.
+
+## Screenshots
+
+*(Replace these placeholders with real screenshots of your running app — 2–3 images are enough. Upload them to the repo and update the paths.)*
+
+| Landing Page | Seller Portal | Buyer Portal |
+|:---:|:---:|:---:|
+| *Add screenshot: landing* | *Add screenshot: seller* | *Add screenshot: buyer* |
 
 ## Stack
 
 - **Backend:** Python Flask, PostgreSQL, SQLAlchemy, JWT
 - **Frontends:** React + TypeScript + Vite
-  - Landing: `http://localhost:5172`
-  - Seller portal: `http://localhost:5173`
-  - Buyer portal: `http://localhost:5174`
+  - Landing, Seller portal, Buyer portal
+- **Mobile:** Capacitor (Android APK via GitHub Actions)
+- **DevOps:** Docker Compose, Render (`render.yaml`), GitHub Actions CI
 
 ## Quick Start
 
@@ -60,6 +72,17 @@ cd frontend/buyer-portal && npm install && npm run dev
 2. **Seller:** Register → add books → fulfill orders (confirm → ship → deliver)
 3. **Buyer:** Register → browse → cart → COD checkout → rate seller & courier when delivered
 
+## Testing & CI
+
+Run the test suite locally:
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/
+```
+
+The `test.yml` GitHub Actions workflow runs the suite on every push — the badge above shows the latest status. An additional `build-apk.yml` workflow builds the Android APK and attaches it to a GitHub release.
+
 ## Design
 
 Shared design system in `frontend/shared/styles/theme.css`:
@@ -80,3 +103,7 @@ Shared design system in `frontend/shared/styles/theme.css`:
 ## Environment
 
 See `.env.example` for `DATABASE_URL`, `CORS_ORIGINS`, and portal URLs.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
