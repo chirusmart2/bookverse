@@ -6,9 +6,19 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_SQLITE = f"sqlite:///{BASE_DIR / 'instance' / 'app.db'}"
-DATABASE_URL = os.environ.get("DATABASE_URL", DEFAULT_SQLITE)
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+
+def normalize_database_url(url):
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+psycopg2://", 1)
+    if url.startswith("postgresql+psycopg://"):
+        return url.replace("postgresql+psycopg://", "postgresql+psycopg2://", 1)
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    return url
+
+
+DATABASE_URL = normalize_database_url(os.environ.get("DATABASE_URL", DEFAULT_SQLITE))
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
