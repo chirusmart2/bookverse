@@ -14,6 +14,8 @@ export const buyerApi = {
 
   getBook: (id: string) => apiFetch<{ book: Book }>(`/buyer/books/${id}`),
 
+  listHistory: () => apiFetch<{ items: { book: Book; viewed_at: string; views: number }[] }>("/buyer/history"),
+
   getCart: () => apiFetch<{ cart: Cart }>("/buyer/cart"),
 
   addToCart: (book_id: string, quantity: number) =>

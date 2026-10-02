@@ -1,4 +1,5 @@
 from app.models.book import Book, BookStatus
+from app.models.book_view import BookView
 from app.models.cart_item import CartItem
 from app.models.courier_partner import CourierPartner
 from app.models.courier_rating import CourierRating
@@ -14,6 +15,7 @@ __all__ = [
     "RefreshToken",
     "Book",
     "BookStatus",
+    "BookView",
     "CartItem",
     "CourierPartner",
     "Order",

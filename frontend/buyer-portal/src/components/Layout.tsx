@@ -38,6 +38,9 @@ export function Layout() {
           <NavLink to="/orders" className={navClass}>
             <IconOrders /> My Orders
           </NavLink>
+          <NavLink to="/history" className={navClass}>
+            <IconOrders /> Recently viewed
+          </NavLink>
         </nav>
 
         <div className="sidebar-footer">

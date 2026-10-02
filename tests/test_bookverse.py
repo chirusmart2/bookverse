@@ -107,6 +107,28 @@ class TestBooks:
         titles = [b["title"] for b in resp.get_json()["books"]]
         assert "Catalog Book" in titles
 
+    def test_book_view_is_persisted_only_for_viewing_buyer(self, client):
+        seller_token = self._seller_token(client)
+        book = client.post(
+            "/api/v1/seller/books",
+            json={"title": "History Book", "author": "Author", "price": "12.00", "stock": 2},
+            headers=auth_header(seller_token),
+        ).get_json()["book"]
+        register(client, email="buyer@example.com", role="buyer")
+        buyer_token = login(client).get_json()["access_token"]
+        register(client, email="other@example.com", role="buyer")
+        other_token = login(client, email="other@example.com").get_json()["access_token"]
+
+        detail = client.get(f"/api/v1/buyer/books/{book['id']}", headers=auth_header(buyer_token))
+        history = client.get("/api/v1/buyer/history", headers=auth_header(buyer_token))
+        other_history = client.get("/api/v1/buyer/history", headers=auth_header(other_token))
+
+        assert detail.status_code == 200
+        assert history.status_code == 200
+        assert history.get_json()["items"][0]["book"]["id"] == book["id"]
+        assert history.get_json()["items"][0]["views"] == 1
+        assert other_history.get_json()["items"] == []
+
 
 class TestCart:
     def _buyer_flow(self, client):

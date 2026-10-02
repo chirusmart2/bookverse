@@ -9,6 +9,7 @@ from app.schemas.rating import RatingSchema
 from app.services.book_service import BookService
 from app.services.cart_service import CartService
 from app.services.checkout_service import CheckoutService
+from app.services.history_service import HistoryService
 from app.services.order_service import OrderService
 from app.services.rating_service import RatingService
 from app.utils.decorators import role_required
@@ -52,7 +53,26 @@ def list_books(user):
 @role_required("buyer")
 def get_book(user, book_id):
     book = BookService.get_catalog_book(book_id)
+    HistoryService.record_book_view(user, book)
     return jsonify({"book": book.to_dict(include_seller=True)})
+
+
+@buyer_bp.route("/history", methods=["GET"])
+@role_required("buyer")
+def get_history(user):
+    views = HistoryService.list_recently_viewed(user)
+    return jsonify(
+        {
+            "items": [
+                {
+                    "book": view.book.to_dict(include_seller=True),
+                    "viewed_at": view.viewed_at.isoformat(),
+                    "views": view.views,
+                }
+                for view in views
+            ]
+        }
+    )
 
 
 @buyer_bp.route("/cart", methods=["GET"])

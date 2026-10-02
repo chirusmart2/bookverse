@@ -10,6 +10,7 @@ import { Checkout } from "./pages/Checkout";
 import { Login } from "./pages/Login";
 import { OrderDetail } from "./pages/OrderDetail";
 import { Orders } from "./pages/Orders";
+import { History } from "./pages/History";
 import { Register } from "./pages/Register";
 
 function PublicOnly({ children }: { children: React.ReactNode }) {
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="cart" element={<CartPage />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="orders" element={<Orders />} />
+            <Route path="history" element={<History />} />
             <Route path="orders/:id" element={<OrderDetail />} />
           </Route>
         </Routes>
