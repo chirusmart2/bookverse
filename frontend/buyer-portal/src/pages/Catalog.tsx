@@ -2,28 +2,47 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { buyerApi } from "../api/buyer";
-import type { Book } from "@shared/types";
+import type { Book, PaginationMeta } from "@shared/types";
 
 export function Catalog() {
   const [books, setBooks] = useState<Book[]>([]);
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const load = (search?: string) => {
-    setLoading(true);
-    buyerApi.listBooks({ q: search || undefined }).then((r) => {
-      setBooks(r.books);
-      setLoading(false);
-    });
-  };
+  const [request, setRequest] = useState({ page: 1, query: "" });
+  const [meta, setMeta] = useState<PaginationMeta | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    load();
-  }, []);
+    let active = true;
+    buyerApi.listBooks({ page: request.page, q: request.query || undefined })
+      .then((r) => {
+        if (!active) return;
+        setBooks(r.books);
+        setMeta(r.meta);
+      })
+      .catch((err: unknown) => {
+        if (!active) return;
+        setError(err instanceof Error ? err.message : "Could not load books.");
+        setBooks([]);
+        setMeta(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
+  }, [request]);
 
   const search = (e: React.FormEvent) => {
     e.preventDefault();
-    load(q);
+    setLoading(true);
+    setError("");
+    setRequest({ page: 1, query: q.trim() });
+  };
+
+  const changePage = (page: number) => {
+    setLoading(true);
+    setError("");
+    setRequest((current) => ({ ...current, page }));
   };
 
   return (
@@ -37,6 +56,8 @@ export function Catalog() {
 
         {loading ? (
           <div className="loading-screen">Loading books…</div>
+        ) : error ? (
+          <div className="alert alert-error" role="alert">{error}</div>
         ) : books.length === 0 ? (
           <div className="empty-state card">
             <p>No books found. Try a different search.</p>
@@ -58,6 +79,22 @@ export function Catalog() {
                 </div>
               </article>
             ))}
+          </div>
+        )}
+        {!loading && !error && meta && meta.total > 0 && (
+          <div className="page-actions" style={{ justifyContent: "space-between", marginTop: "1.5rem" }}>
+            <span className="text-secondary">
+              Showing {(meta.page - 1) * meta.per_page + 1}–{Math.min(meta.page * meta.per_page, meta.total)} of {meta.total} books
+            </span>
+            <div className="page-actions">
+              <button type="button" className="btn btn-secondary" onClick={() => changePage(meta.page - 1)} disabled={meta.page <= 1}>
+                Previous
+              </button>
+              <span className="text-secondary">Page {meta.page} of {meta.pages}</span>
+              <button type="button" className="btn btn-secondary" onClick={() => changePage(meta.page + 1)} disabled={meta.page >= meta.pages}>
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>

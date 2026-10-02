@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { sellerApi } from "../api/seller";
@@ -9,16 +9,16 @@ export function Books() {
   const [statusFilter, setStatusFilter] = useState("");
   const [counts, setCounts] = useState<{ active: number; inactive: number; total: number } | null>(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     sellerApi.listBooks({ status: statusFilter || undefined }).then((r) => {
       setBooks(r.books);
       setCounts(r.counts);
     });
-  };
+  }, [statusFilter]);
 
   useEffect(() => {
     load();
-  }, [statusFilter]);
+  }, [load]);
 
   const deactivate = async (id: string) => {
     if (!confirm("Deactivate this book? It will be hidden from the catalog.")) return;

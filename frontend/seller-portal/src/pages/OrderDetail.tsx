@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { sellerApi } from "../api/seller";
@@ -13,15 +13,17 @@ export function OrderDetail() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const load = () => {
+  const load = useCallback(() => {
     if (!id) return;
-    sellerApi.getOrder(id).then((r) => setOrder(r.order));
-  };
+    sellerApi.getOrder(id)
+      .then((r) => setOrder(r.order))
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : "Could not load order."));
+  }, [id]);
 
   useEffect(() => {
     load();
     sellerApi.listCouriers().then((r) => setCouriers(r.couriers));
-  }, [id]);
+  }, [load]);
 
   const updateStatus = async (status: string) => {
     if (!id) return;

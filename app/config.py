@@ -26,6 +26,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL", "sqlite:///:memory:")
+    JWT_SECRET_KEY = "test-only-jwt-signing-key-longer-than-32-bytes"
 
 class ProductionConfig(Config):
     DEBUG = False

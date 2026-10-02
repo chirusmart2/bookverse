@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/auth-state";
 import { IconCart, IconOrders, IconShop } from "./Icons";
 
 const LANDING_URL = import.meta.env.VITE_LANDING_URL || "http://localhost:5172";

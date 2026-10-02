@@ -14,6 +14,10 @@ export function Register() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    if (form.password.length < 8 || !/[a-z]/.test(form.password) || !/[A-Z]/.test(form.password) || !/\d/.test(form.password)) {
+      setError("Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number.");
+      return;
+    }
     setLoading(true);
     try {
       await authApi.register({ ...form, role: "buyer" });
@@ -59,6 +63,7 @@ export function Register() {
             <div className="form-group">
               <label>Password</label>
               <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+              <span className="muted" style={{ fontSize: "0.8rem" }}>Min 8 characters, including uppercase, lowercase, and a number</span>
             </div>
             <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
               {loading ? "Creating…" : "Create account"}

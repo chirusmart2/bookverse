@@ -1,7 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/auth-state";
 import { BookDetail } from "./pages/BookDetail";
 import { CartPage } from "./pages/Cart";
 import { Catalog } from "./pages/Catalog";

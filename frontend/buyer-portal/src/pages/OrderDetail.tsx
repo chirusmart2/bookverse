@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { buyerApi } from "../api/buyer";
@@ -24,13 +24,16 @@ export function OrderDetail() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const load = () => {
-    if (id) buyerApi.getOrder(id).then((r) => setOrder(r.order));
-  };
+  const load = useCallback(() => {
+    if (!id) return;
+    buyerApi.getOrder(id)
+      .then((r) => setOrder(r.order))
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : "Could not load order."));
+  }, [id]);
 
   useEffect(() => {
     load();
-  }, [id]);
+  }, [load]);
 
   const rateSeller = async (e: FormEvent) => {
     e.preventDefault();

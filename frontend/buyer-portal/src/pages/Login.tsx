@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../components/Icons";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/auth-state";
 
 const LANDING_URL = import.meta.env.VITE_LANDING_URL || "http://localhost:5172";
 
