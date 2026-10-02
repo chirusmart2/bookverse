@@ -11,6 +11,8 @@ The live deployment also includes the separate portals:
 | Landing | https://bookverse-landing.onrender.com |
 | Seller portal | https://bookverse-seller.onrender.com |
 | Buyer portal | https://bookverse-buyer.onrender.com |
+| Backend API | https://bookverse-api-uoc8.onrender.com |
+| API health check | https://bookverse-api-uoc8.onrender.com/health |
 
 > **Note:** The API runs on Render's free tier, so the first request may take ~30 seconds to wake it up. Screenshots below show the current look of each portal.
 

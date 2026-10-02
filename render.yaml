@@ -14,7 +14,7 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: CORS_ORIGINS
-        sync: false
+        value: https://bookverse-landing.onrender.com,https://bookverse-buyer.onrender.com,https://bookverse-seller.onrender.com
 
   - type: web
     runtime: static
@@ -24,9 +24,9 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_SELLER_PORTAL_URL
-        sync: false
+        value: https://bookverse-seller.onrender.com
       - key: VITE_BUYER_PORTAL_URL
-        sync: false
+        value: https://bookverse-buyer.onrender.com
 
   - type: web
     runtime: static
@@ -36,9 +36,9 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        sync: false
+        value: https://bookverse-api-uoc8.onrender.com/api/v1
       - key: VITE_LANDING_URL
-        sync: false
+        value: https://bookverse-landing.onrender.com
 
   - type: web
     runtime: static
@@ -48,6 +48,6 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        sync: false
+        value: https://bookverse-api-uoc8.onrender.com/api/v1
       - key: VITE_LANDING_URL
-        sync: false
+        value: https://bookverse-landing.onrender.com
