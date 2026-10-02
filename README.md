@@ -1,6 +1,6 @@
 # BookVerse — Book Store Marketplace
 
-A full-stack book marketplace with a **landing page**, separate **seller** and **buyer** portals, JWT auth, catalog management, cart/checkout (Cash on Delivery), post-delivery ratings, and an **Android app** built with Capacitor. Containerized with Docker and deployed on **Render**.
+A full-stack book marketplace with a **landing page**, separate **seller** and **buyer** portals, JWT auth, catalog management, cart/checkout (Cash on Delivery), post-delivery ratings, and an **Android app** built with Capacitor. Containerized with Docker and deployed on **Render**. The production database is PostgreSQL hosted on **Neon**.
 
 **[🔗 Live Demo — Landing Page](https://bookverse-landing.onrender.com)**
 
@@ -28,6 +28,7 @@ The live deployment also includes the separate portals:
 - **Frontends:** React + TypeScript + Vite
   - Landing, Seller portal, Buyer portal
 - **Mobile:** Capacitor (Android APK via GitHub Actions)
+- **Database hosting:** Neon PostgreSQL (free plan; PostgreSQL-compatible replacement for the previous Supabase setup)
 - **DevOps:** Docker Compose, Render (`render.yaml`), GitHub Actions CI
 
 ## Quick Start
@@ -110,7 +111,29 @@ Shared design system in `frontend/shared/styles/theme.css`:
 
 ## Environment
 
-See `.env.example` for `DATABASE_URL`, `CORS_ORIGINS`, and portal URLs.
+See `.env.example` for `DATABASE_URL`, `CORS_ORIGINS`, and portal URLs. For Render production configuration, use `.env.production.example` as a reference and paste the Neon `DATABASE_URL` into the backend service's private Environment Variables.
+
+### Neon production migration
+
+The application already reads the database from `DATABASE_URL`, so moving from Supabase PostgreSQL to Neon PostgreSQL does not require changing the Flask models or API routes:
+
+1. Create or open the Neon project and use the `production` branch.
+2. Copy the pooled connection string.
+3. In Render, replace the backend `DATABASE_URL` value with the Neon string.
+4. Redeploy the backend.
+5. Run `flask db upgrade` and `python scripts/seed_couriers.py` if the Neon database is new.
+6. Open `/health` and confirm that the API returns `{"status":"ok"}`.
+
+### Windows one-click startup
+
+Place `start-bookverse.bat` in the project root. It expects the Python virtual environment at `.venv` inside that same folder. Create it once with:
+
+```bat
+py -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Then double-click `start-bookverse.bat`. The landing page opens at `http://localhost:5172`, the seller portal at `http://localhost:5173`, and the buyer portal at `http://localhost:5174`.
 
 ## License
 

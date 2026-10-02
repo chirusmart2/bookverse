@@ -11,3 +11,6 @@ migrations/versions/__pycache__/
 *.backup
 *_temp.py
 *.log
+.neon
+.env.local
+node_modules/
