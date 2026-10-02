@@ -32,6 +32,10 @@ services:
     runtime: static
     name: bookverse-seller
     rootDir: frontend/seller-portal
+    buildFilter:
+      paths:
+        - frontend/seller-portal/**
+        - frontend/shared/**
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
@@ -44,6 +48,10 @@ services:
     runtime: static
     name: bookverse-buyer
     rootDir: frontend/buyer-portal
+    buildFilter:
+      paths:
+        - frontend/buyer-portal/**
+        - frontend/shared/**
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
