@@ -14,17 +14,15 @@ The live deployment also includes the separate portals:
 | Backend API | https://bookverse-api-uoc8.onrender.com |
 | API health check | https://bookverse-api-uoc8.onrender.com/health |
 
-> **Note:** The API runs on Render's free tier, so the first request may take ~30 seconds to wake it up. Screenshots below show the current look of each portal.
+> **Note:** The API runs on Render's free tier, so the first request may take ~30 seconds to wake it up. The screenshots below were captured fresh from the current public deployment on 7 October 2026.
 
 The seller and buyer portals share this API and its persistent PostgreSQL database. Seller accounts, active in-stock book listings, buyer carts, and buyer orders are saved there, so they remain available when the same account signs in again. New active books appear in the buyer catalog; use the catalog pages to browse beyond the first 20 results. The backend's `DATABASE_URL` must point to the configured Neon database in Render for live data to persist.
 
 ## Screenshots
 
-*(Replace these placeholders with real screenshots of your running app — 2–3 images are enough. Upload them to the repo and update the paths.)*
-
 | Landing Page | Seller Portal | Buyer Portal |
 |:---:|:---:|:---:|
-| *Add screenshot: landing* | *Add screenshot: seller* | *Add screenshot: buyer* |
+| ![BookVerse landing page](docs/screenshots/landing-page.png) | ![BookVerse seller portal](docs/screenshots/seller-portal-login.png) | ![BookVerse buyer portal](docs/screenshots/buyer-portal-login.png) |
 
 ## Stack
 
