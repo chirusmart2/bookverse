@@ -1,0 +1,61 @@
+name: Build BookVerse Owner APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "frontend/owner-portal/**"
+      - "frontend/shared/**"
+      - "mobile-owner/**"
+      - "app/routes/owner.py"
+      - "app/utils/decorators.py"
+      - ".github/workflows/build-owner-apk.yml"
+
+jobs:
+  build-owner-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/owner-portal/package-lock.json
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Build owner portal
+        working-directory: frontend/owner-portal
+        env:
+          VITE_API_BASE_URL: https://bookverse-api-uoc8.onrender.com/api/v1
+        run: npm ci && npm run build
+
+      - name: Install Capacitor dependencies
+        working-directory: mobile-owner
+        run: npm install
+
+      - name: Generate Android app
+        working-directory: mobile-owner
+        run: npx cap add android && npx cap sync android
+
+      - name: Build debug APK
+        working-directory: mobile-owner/android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BookVerse-Owner-Android
+          path: mobile-owner/android/app/build/outputs/apk/debug/app-debug.apk

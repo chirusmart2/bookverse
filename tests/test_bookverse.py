@@ -67,6 +67,85 @@ class TestRoleBasedAccess:
         assert resp.status_code == 401
 
 
+class TestOwnerAccess:
+    def _owner_token(self, client, monkeypatch):
+        monkeypatch.setitem(client.application.config, "BOOKVERSE_OWNER_EMAIL", "owner@example.com")
+        register(client, email="owner@example.com", role="buyer")
+        return login(client, email="owner@example.com").get_json()["access_token"]
+
+    def test_owner_routes_are_not_available_to_regular_accounts(self, client, monkeypatch):
+        register(client, email="seller@example.com", role="seller")
+        seller_token = login(client, email="seller@example.com").get_json()["access_token"]
+        monkeypatch.setitem(client.application.config, "BOOKVERSE_OWNER_EMAIL", "owner@example.com")
+
+        response = client.get("/api/v1/owner/dashboard", headers=auth_header(seller_token))
+
+        assert response.status_code == 403
+
+    def test_owner_can_suspend_account_and_revoke_sessions(self, client, monkeypatch):
+        owner_token = self._owner_token(client, monkeypatch)
+        seller = register(client, email="seller@example.com", role="seller").get_json()["user"]
+        seller_login = login(client, email="seller@example.com").get_json()
+
+        response = client.patch(
+            f"/api/v1/owner/users/{seller['id']}/status",
+            json={"is_active": False},
+            headers=auth_header(owner_token),
+        )
+
+        assert response.status_code == 200
+        assert response.get_json()["user"]["is_active"] is False
+        assert client.get(
+            "/api/v1/seller/books", headers=auth_header(seller_login["access_token"])
+        ).status_code == 401
+        assert client.get("/api/v1/owner/audit", headers=auth_header(owner_token)).get_json()["actions"][0]["action"] == "user_status_changed"
+
+    def test_owner_cannot_suspend_self(self, client, monkeypatch):
+        owner_token = self._owner_token(client, monkeypatch)
+        owner_id = login(client, email="owner@example.com").get_json()["user"]["id"]
+
+        response = client.patch(
+            f"/api/v1/owner/users/{owner_id}/status",
+            json={"is_active": False},
+            headers=auth_header(owner_token),
+        )
+
+        assert response.status_code == 403
+
+    def test_owner_can_unlist_a_book(self, client, monkeypatch):
+        owner_token = self._owner_token(client, monkeypatch)
+        register(client, email="seller@example.com", role="seller")
+        seller_token = login(client, email="seller@example.com").get_json()["access_token"]
+        book = client.post(
+            "/api/v1/seller/books",
+            json={"title": "Owner Review Book", "author": "Author", "price": "8.50", "stock": 2},
+            headers=auth_header(seller_token),
+        ).get_json()["book"]
+
+        response = client.patch(
+            f"/api/v1/owner/books/{book['id']}/status",
+            json={"status": "inactive"},
+            headers=auth_header(owner_token),
+        )
+
+        assert response.status_code == 200
+        assert response.get_json()["book"]["status"] == "inactive"
+
+        seller_relist = client.patch(
+            f"/api/v1/seller/books/{book['id']}",
+            json={"status": "active"},
+            headers=auth_header(seller_token),
+        )
+        assert seller_relist.status_code == 403
+
+        owner_relist = client.patch(
+            f"/api/v1/owner/books/{book['id']}/status",
+            json={"status": "active"},
+            headers=auth_header(owner_token),
+        )
+        assert owner_relist.status_code == 200
+
+
 class TestBooks:
     def _seller_token(self, client):
         register(client, email="seller@example.com", role="seller")

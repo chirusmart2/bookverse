@@ -2,7 +2,9 @@ import uuid
 
 from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
+from sqlalchemy import desc
 
+from app.models import OwnerAction
 from app.schemas.book import BookBulkCreateSchema, BookCreateSchema, BookUpdateSchema
 from app.schemas.order import OrderStatusUpdateSchema
 from app.services.book_service import BookService
@@ -10,6 +12,7 @@ from app.services.order_service import OrderService
 from app.services.rating_service import RatingService
 from app.utils.decorators import role_required
 from app.utils.errors import error_response
+from app.utils.exceptions import ForbiddenError
 
 seller_bp = Blueprint("seller", __name__)
 
@@ -86,6 +89,13 @@ def update_book(user, book_id):
 
     if not data:
         return error_response("validation_error", "No fields to update", status_code=400)
+
+    if data.get("status") == "active":
+        owner_decision = OwnerAction.query.filter_by(
+            action="book_status_changed", target_type="book", target_id=str(book_id)
+        ).order_by(desc(OwnerAction.created_at), desc(OwnerAction.id)).first()
+        if owner_decision and owner_decision.details.get("status") == "inactive":
+            raise ForbiddenError("This listing was removed by the marketplace owner")
 
     book = BookService.update_book(user.id, book_id, data)
     return jsonify({"book": book.to_dict()})
