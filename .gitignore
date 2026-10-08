@@ -13,4 +13,6 @@ migrations/versions/__pycache__/
 *.log
 .neon
 .env.local
+**/.env.*.local
 node_modules/
+**/dist/

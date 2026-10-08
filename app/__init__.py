@@ -35,11 +35,13 @@ def create_app(config_name=None):
 
     from app.routes.auth import auth_bp
     from app.routes.buyer import buyer_bp
+    from app.routes.owner import owner_bp
     from app.routes.seller import seller_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
     app.register_blueprint(seller_bp, url_prefix="/api/v1/seller")
     app.register_blueprint(buyer_bp, url_prefix="/api/v1/buyer")
+    app.register_blueprint(owner_bp, url_prefix="/api/v1/owner")
 
     @app.route("/health")
     def health():

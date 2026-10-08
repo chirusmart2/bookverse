@@ -906,3 +906,89 @@ a:hover {
     margin-bottom: 1.5rem;
   }
 }
+
+/* Seller navigation replacement for the sidebar hidden on small screens. */
+.seller-mobile-header {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .seller-app-shell .sidebar {
+    display: flex;
+    width: min(300px, 84vw);
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform var(--transition-slow);
+    box-shadow: var(--shadow-lg);
+    z-index: 120;
+  }
+
+  .seller-app-shell .sidebar.mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .seller-mobile-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    border: 0;
+    background: rgba(28, 25, 23, 0.48);
+  }
+
+  .seller-mobile-header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    min-height: 58px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .seller-mobile-brand {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .seller-mobile-brand span {
+    margin-left: 0.35rem;
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .seller-mobile-menu {
+    display: inline-grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    color: var(--color-text);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  .seller-mobile-menu svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .seller-app-shell .page-header-bar {
+    top: 58px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seller-app-shell .sidebar {
+    transition: none;
+  }
+}

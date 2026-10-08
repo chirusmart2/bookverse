@@ -76,6 +76,15 @@ cd frontend/buyer-portal && npm install && npm run dev
 | Landing | http://localhost:5172 | Choose seller or buyer portal |
 | Seller | http://localhost:5173 | Manage books & orders |
 | Buyer | http://localhost:5174 | Shop, cart, COD checkout, ratings |
+| Owner | http://localhost:5175 | Owner-only marketplace controls |
+
+### Owner Android app
+
+The separate `mobile-owner` Capacitor target builds `BookVerse Owner` as a distinct Android app. The backend grants owner access only when the signed-in account email exactly matches `BOOKVERSE_OWNER_EMAIL`, configured on the API service in Render. Set this to your existing, active account email; never put it in the APK or frontend environment. The APK uses the same hosted API and Neon-backed data as the web portals.
+
+The owner portal can inspect accounts and books, suspend/restore accounts, unlist/relist books, and review the owner-action audit log. Suspension and unlisting preserve historical orders.
+
+After backend changes are pushed and deployed, run **Build BookVerse Owner APK** from GitHub Actions. Download the `BookVerse-Owner-Android` workflow artifact. The APK is currently a debug-signed installable build; publishing to Google Play requires a separately managed release signing key.
 
 ## User Flow
 
@@ -110,6 +119,7 @@ Shared design system in `frontend/shared/styles/theme.css`:
 | `/api/v1/auth` | Register, login, tokens |
 | `/api/v1/seller` | Books, orders, couriers |
 | `/api/v1/buyer` | Catalog, cart, checkout, ratings |
+| `/api/v1/owner` | Owner-only marketplace controls |
 
 ## Environment
 

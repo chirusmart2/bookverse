@@ -13,8 +13,10 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
+      - key: BOOKVERSE_OWNER_EMAIL
+        sync: false
       - key: CORS_ORIGINS
-        value: https://bookverse-landing.onrender.com,https://bookverse-buyer.onrender.com,https://bookverse-seller.onrender.com
+        value: https://bookverse-landing.onrender.com,https://bookverse-buyer.onrender.com,https://bookverse-seller.onrender.com,https://localhost
 
   - type: web
     runtime: static
